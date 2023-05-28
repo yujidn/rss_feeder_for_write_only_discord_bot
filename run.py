@@ -15,7 +15,7 @@ res = requests.get(url=os.environ.get("RSS_LIST"))
 feed_list = yaml.safe_load(res.text)
 
 
-def socket_communication(chid: int, data: dict, prefix: str):
+def socket_communication(chid: int, data: str, prefix: str):
     import socket
 
     # ホストとポートを指定
@@ -37,4 +37,5 @@ for feed in feed_list:
         new_entries = rss_feeder.check_feed(url)
         new_entries.reverse()
         for entry in new_entries:
-            socket_communication(ch_id, entry, prefix="")
+            txt = "\n".join([f"{k}: {v}" for k, v in entry.items()])
+            socket_communication(ch_id, txt, prefix="")
