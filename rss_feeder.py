@@ -34,9 +34,9 @@ def get_feed(url: str) -> dict:
     try:
         feed = feedparser.parse(url)
         new_entry = {
-            "title": feed.entries[0].title,
-            "link": feed.entries[0].link,
-            "tags": [tag.term for tag in feed.entries[0].tags],
+            "title": getattr(feed.entries[0], "title", ""),
+            "link": getattr(feed.entries[0], "link", ""),
+            "tags": [tag.term for tag in getattr(feed.entries[0], "tags", [])],
         }
     except Exception as e:
         print(f"An error occurred while fetching the feed: {e}")
