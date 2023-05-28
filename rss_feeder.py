@@ -8,22 +8,22 @@ import feedparser
 cache_dir = "cache"
 
 
-def load_last_entry(url: str) -> dict:
-    entry = {}
+def load_old_entries(url: str) -> typing.List[dict]:
+    entries = []
     filename = get_filepath(url)
     if os.path.exists(filename):
         with open(filename, "r") as f:
-            entry = json.load(f)
-    return entry
+            entries = json.load(f)
+    return entries
 
 
-def store_last_entry(url: str, entry: dict) -> None:
+def store_old_entries(url: str, entries: typing.List[dict]) -> None:
     if os.path.exists(cache_dir) is False:
         os.mkdir(cache_dir)
 
     filename = get_filepath(url)
     with open(filename, "w") as f:
-        json.dump(entry, f)
+        json.dump(entries, f)
 
 
 def get_filepath(url: str) -> str:
@@ -60,15 +60,20 @@ def check_feed(url: str) -> typing.List[dict]:
     if len(entries) == 0:
         return []
 
-    last_entry = load_last_entry(url)
+    old_entries = load_old_entries(url)
 
     new_entries = []
     for entry in entries:
-        if entry != last_entry:
+        flg = True
+        for ol in old_entries:
+            if entry == ol:
+                flg = False
+                break
+        if flg:
             new_entries.append(entry)
         else:
             break
     if len(new_entries) > 0:
-        store_last_entry(url, new_entries[0])
+        store_old_entries(url, old_entries + new_entries)
 
     return new_entries
