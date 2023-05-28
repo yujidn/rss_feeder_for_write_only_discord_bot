@@ -37,4 +37,4 @@ for feed in feed_list:
         new_entries = rss_feeder.check_feed(url)
         new_entries.reverse()
         for entry in new_entries:
-            socket_communication(ch_id, entry)
+            socket_communication(ch_id, entry, prefix="")
