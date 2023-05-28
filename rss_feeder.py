@@ -45,14 +45,15 @@ def get_feed(url: str) -> dict:
     return new_entry
 
 
-def check_feed(url: str):
+def check_feed(url: str) -> dict:
     new_entry = get_feed(url)
     if new_entry == {}:
-        return
+        return {}
 
     last_entry = load_last_entry(url)
     if new_entry != last_entry:
-        last_entry[url] = new_entry
         store_last_entry(url, new_entry)
 
-        print(last_entry)
+        return new_entry
+
+    return {}
