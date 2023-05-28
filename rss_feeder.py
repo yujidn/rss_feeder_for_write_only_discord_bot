@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os
+import typing
 
 import feedparser
 
@@ -30,30 +31,44 @@ def get_filepath(url: str) -> str:
     return f"{os.path.join(cache_dir, hashed_url)}.json"
 
 
-def get_feed(url: str) -> dict:
+def get_feed(url: str) -> typing.List[dict]:
     try:
         feed = feedparser.parse(url)
-        new_entry = {
-            "title": getattr(feed.entries[0], "title", ""),
-            "link": getattr(feed.entries[0], "link", ""),
-            "tags": [tag.term for tag in getattr(feed.entries[0], "tags", [])],
-        }
+
+        entries = []
+        # 10件まで取得
+        for entry in feed.entries[:10]:
+            entries.append(
+                {
+                    "title": getattr(entry, "title", ""),
+                    "link": getattr(entry, "link", ""),
+                    "tags": [tag.term for tag in getattr(entry, "tags", [])]
+                    if hasattr(entry, "tags")
+                    else [],
+                }
+            )
+
     except Exception as e:
         print(f"An error occurred while fetching the feed: {e}")
-        return {}
+        return entries
 
-    return new_entry
+    return entries
 
 
-def check_feed(url: str) -> dict:
-    new_entry = get_feed(url)
-    if new_entry == {}:
-        return {}
+def check_feed(url: str) -> typing.List[dict]:
+    entries = get_feed(url)
+    if len(entries) == 0:
+        return []
 
     last_entry = load_last_entry(url)
-    if new_entry != last_entry:
-        store_last_entry(url, new_entry)
 
-        return new_entry
+    new_entries = []
+    for entry in entries:
+        if entry != last_entry:
+            new_entries.append(entry)
+        else:
+            break
+    if len(new_entries) > 0:
+        store_last_entry(url, new_entries[0])
 
-    return {}
+    return new_entries
