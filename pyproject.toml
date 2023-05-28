@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-repository-template"
+name = "rss_feeder_for_write_only_discord_bot"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -7,7 +7,8 @@ readme = "README.md"
 packages = [{include = "python_repository_template"}]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
+feedparser = "^6.0.10"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.1.2"
