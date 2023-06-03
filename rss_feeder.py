@@ -42,10 +42,10 @@ def get_feed(url: str) -> typing.List[dict]:
                 {
                     "title": getattr(entry, "title", ""),
                     "link": getattr(entry, "link", ""),
-                    "tags": ",".join(
+                    "tags": ", ".join(
                         [tag.term for tag in getattr(entry, "tags", [])] if hasattr(entry, "tags") else []
                     ),
-                    "description": getattr(entry, "description", ""),
+                    # "description": getattr(entry, "description", ""),
                 }
             )
 
