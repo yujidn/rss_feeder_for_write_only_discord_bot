@@ -61,7 +61,7 @@ def check_feed(url: str) -> typing.List[dict]:
     if len(entries) == 0:
         return []
 
-    old_entries = load_old_entries(url)[:100]
+    old_entries = load_old_entries(url)[-100:]
 
     new_entries = []
     for entry in entries:
