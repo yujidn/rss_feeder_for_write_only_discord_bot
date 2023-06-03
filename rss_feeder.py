@@ -42,9 +42,10 @@ def get_feed(url: str) -> typing.List[dict]:
                 {
                     "title": getattr(entry, "title", ""),
                     "link": getattr(entry, "link", ""),
-                    "tags": [tag.term for tag in getattr(entry, "tags", [])]
-                    if hasattr(entry, "tags")
-                    else [],
+                    "tags": ",".join(
+                        [tag.term for tag in getattr(entry, "tags", [])] if hasattr(entry, "tags") else []
+                    ),
+                    "description": getattr(entry, "description", ""),
                 }
             )
 
@@ -66,7 +67,7 @@ def check_feed(url: str) -> typing.List[dict]:
     for entry in entries:
         flg = True
         for ol in old_entries:
-            if entry == ol:
+            if (entry["title"] == ol["title"]) and (entry["link"] == ol["link"]):
                 flg = False
                 break
         if flg:
